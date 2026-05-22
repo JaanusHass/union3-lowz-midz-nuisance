@@ -12,7 +12,7 @@ This is not an official DESI/CMB/Union3 full likelihood analysis. It is a public
 - Low-z / mid-z Gaussian nuisance improvement: Delta chi2 ≈ 17.120
 - CPL after nuisance: Delta chi2 ≈ 0.870
 - Public joint cross-check: CPL improvement drops from ≈ 8.29 to ≈ 0.52 after nuisance
-- Random-template null test: 0/200 random templates exceeded the original template
+- - Random-template null test: 0/200 random templates exceeded the original template; the closest random template was near the original, so this is a ranking/null diagnostic rather than proof of template uniqueness.
 
 ## Data
 
