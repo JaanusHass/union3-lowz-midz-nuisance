@@ -27,3 +27,35 @@ Private work-in-progress reproduction package.
 ## Limitations
 
 This repository does not reproduce the official DESI/CMB/Union3 full likelihood. It reproduces compressed-data and public-data diagnostic tests only.
+
+## How to run
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+Download the public Union3 compressed FITS file from the `rubind/union3_release` repository and place it here:
+
+```text
+data/mu_mat_union3_cosmo=2_mu.fits
+```
+
+For the three-version comparison, also place the Union3.1 compressed files here:
+
+```text
+data/mu_mat_union3.1_UNITY1.7_template_cosmo=2_0_mu.fits
+data/mu_mat_union3.1_UNITY1.8_template_cosmo=2_0_mu.fits
+```
+
+Run the main diagnostics:
+
+```bash
+python scripts/01_union3_fixed_omega_test.py
+python scripts/02_template_robustness_grid.py
+python scripts/03_random_template_null.py
+python scripts/04_leave_one_region_out.py
+python scripts/05_three_version_comparison.py
+python scripts/06_cumulative_lowz_removal.py
+```
+The scripts write output CSV files into the `results/` folder.
