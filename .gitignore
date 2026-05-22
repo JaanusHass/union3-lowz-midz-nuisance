@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.env
+.DS_Store
+Thumbs.db
+
+# Local data files
+data/*.fits
+data/*.tar.gz
+
+# Large or temporary outputs
+chains/
+*.log
+*.tmp
