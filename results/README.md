@@ -8,7 +8,6 @@ Expected output files include:
 - template_robustness_grid.csv
 - template_robustness_grid_summary.csv
 - random_template_null.csv
-- random_template_null_summary.csv
 - leave_one_region_out.csv
 - three_version_comparison.csv
 - cumulative_lowz_removal.csv
