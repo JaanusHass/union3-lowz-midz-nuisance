@@ -11,7 +11,7 @@ This is not an official DESI/CMB/Union3 full likelihood analysis. It is a public
 - Union3 fixed-Omega_m CPL improvement: Delta chi2 ≈ 7.536
 - Low-z / mid-z Gaussian nuisance improvement: Delta chi2 ≈ 17.120
 - CPL after nuisance: Delta chi2 ≈ 0.870
-- Public joint cross-check: CPL improvement drops from ≈ 8.29 to ≈ 0.52 after nuisance _(described in the note; the Cobaya configuration is not yet included in this repository — see Status)_
+- Public joint cross-check: CPL improvement drops from ≈ 8.29 to ≈ 0.52 after nuisance _(Cobaya configurations are included in `cobaya/`; the large MCMC chains and external likelihood data are not committed — see Status)_
 - Random-template null test: 0/200 random templates exceeded the original template; the closest random template was near the original, so this is a ranking/null diagnostic rather than proof of template uniqueness.
 - Note: The repository scripts use the current fixed-Omega_m compressed-data protocol. Some earlier draft/preprint robustness tables used a simplified diagnostic setup, so absolute Delta chi2 values may differ from the current repository outputs. The repository scripts and generated CSV files should be treated as the current reproducible results.
 
@@ -71,4 +71,13 @@ python scripts/04_leave_one_region_out.py
 python scripts/05_three_version_comparison.py
 python scripts/06_cumulative_lowz_removal.py
 ```
-The scripts write output CSV files into the `results/` folder.
+
+Run the degeneracy and beyond-CPL diagnostics (Sections 7.5-7.6 of the note):
+
+```bash
+python scripts/07_template_cpl_overlap.py
+python scripts/08_orthogonalized_null.py
+```
+
+The scripts write output CSV files into the `results/` folder. Script 07 also
+regenerates the Figure 2 files `paper/overlap_angle.pdf` and `paper/overlap_angle.png`.

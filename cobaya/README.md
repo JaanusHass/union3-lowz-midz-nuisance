@@ -33,7 +33,9 @@ cobaya-install fullplanck_cpl_nuis.yaml --packages-path /path/to/cobaya_packages
 ```
 
 `cobaya-install` will fetch CAMB and the Planck/DESI/Union3 likelihood data. Point every
-run at the same `--packages-path`.
+run at the same `--packages-path`. The analysis scripts (`build_table2.py`,
+`fullplanck_w0wa_aic.py`, `plot_contours.py`) use `getdist`, which is installed as a
+dependency of Cobaya.
 
 ### Software versions used for the published numbers
 

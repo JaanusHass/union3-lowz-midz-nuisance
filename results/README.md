@@ -11,5 +11,8 @@ Expected output files include:
 - leave_one_region_out.csv
 - three_version_comparison.csv
 - cumulative_lowz_removal.csv
+- template_cpl_overlap.csv
+- component_decomposition.csv
+- orthogonalized_null.csv
 
 Temporary chain files, intermediate experiments, and local clutter should not be committed here.
