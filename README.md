@@ -11,7 +11,7 @@ This is not an official DESI/CMB/Union3 full likelihood analysis. It is a public
 - Union3 fixed-Omega_m CPL improvement: Delta chi2 ≈ 7.536
 - Low-z / mid-z Gaussian nuisance improvement: Delta chi2 ≈ 17.120
 - CPL after nuisance: Delta chi2 ≈ 0.870
-- Public joint cross-check: CPL improvement drops from ≈ 8.29 to ≈ 0.52 after nuisance
+- Public joint cross-check: CPL improvement drops from ≈ 8.29 to ≈ 0.52 after nuisance _(described in the note; the Cobaya configuration is not yet included in this repository — see Status)_
 - Random-template null test: 0/200 random templates exceeded the original template; the closest random template was near the original, so this is a ranking/null diagnostic rather than proof of template uniqueness.
 - Note: The repository scripts use the current fixed-Omega_m compressed-data protocol. Some earlier draft/preprint robustness tables used a simplified diagnostic setup, so absolute Delta chi2 values may differ from the current repository outputs. The repository scripts and generated CSV files should be treated as the current reproducible results.
 
@@ -23,7 +23,16 @@ The original data files are not redistributed here unless licensing and file-siz
 
 ## Status
 
-Private work-in-progress reproduction package.
+Public reproduction package.
+
+The compressed-data diagnostics (the fixed-Omega_m protocol, template robustness grid,
+random null test, leave-one-region-out, three-version comparison, and cumulative low-z
+removal) are fully reproducible from the scripts in `scripts/`. The joint cross-checks
+described in the note — the public-data Cobaya proxy (DESI DR1 BAO + compressed CMB prior
++ Union3) and the full-likelihood run (Planck NPIPE CamSpec + DESI DR1 BAO + Union3) —
+are **not yet reproducible from this repository**: their configuration files are not
+included here (see `cobaya/`). Those results are reported in the note as public
+cross-checks, not as repository-reproducible outputs.
 
 ## Limitations
 

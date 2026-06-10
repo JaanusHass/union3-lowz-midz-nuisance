@@ -1,7 +1,11 @@
+# Compressed-data diagnostics (scripts 01-06)
 numpy
 scipy
 pandas
 astropy
 matplotlib
-cobaya
-camb
+
+# Joint cross-checks (Cobaya proxy and full likelihood) — configs not yet in this repo.
+# Uncomment if/when the cobaya/ configuration files are added:
+# cobaya
+# camb

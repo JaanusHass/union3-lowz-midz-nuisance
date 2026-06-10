@@ -1,0 +1,724 @@
+\documentclass[11pt]{article}
+
+% ---------- packages ----------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\IfFileExists{lmodern.sty}{\usepackage{lmodern}}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{caption}
+\usepackage{authblk}
+\usepackage[hidelinks]{hyperref}
+
+% Show a placeholder box if a figure file is not present, so the document
+% always compiles. Drop the real PDF (e.g. fullplanck_w0wa.pdf) next to this
+% .tex file and it will be used automatically.
+\newcommand{\figorbox}[3]{%
+  \IfFileExists{#1}{\includegraphics[width=#2]{#1}}%
+  {\fbox{\parbox[c][4.5cm][c]{#2}{\centering\itshape [Insert figure here]\\[4pt]\normalfont\small #3}}}%
+}
+
+\captionsetup{font=small,labelfont=bf}
+\setlength{\parskip}{4pt}
+
+% ---------- title ----------
+\title{\bfseries A Low-$z$ / Mid-$z$ Nuisance Mode in the Union3 Compressed
+Supernova Data: Implications for the DESI DR1 Dynamic Dark Energy Preference}
+
+\author{Jaanus Hass}
+\affil{Independent researcher, Saru, Estonia \\ \texttt{jaanush@hotmail.com}}
+\date{May 2026 \quad(full-likelihood cross-check added June 2026)}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\small\itshape
+Analysis performed May--June 2026 using AI-assisted coding and checking.
+All results are reproducible from public data.
+\end{center}
+
+% ====================================================================
+\begin{abstract}
+\noindent
+We test whether the Union3 supernova contribution to the DESI DR1 CPL dynamical
+dark-energy preference is robust to a single redshift-dependent nuisance direction.
+Using the public Union3 compressed 22-node precision matrix and individual
+light-curve fit files, we find that a Gaussian low-$z$ / mid-$z$ nuisance template
+$T(z)=G(z;0.09,0.06)-G(z;0.775,0.10)$ improves the fixed-$\Omega_m=0.2975$ fit by
+$\Delta\chi^2=17.12$ (AIC $+15.12$), compared with $\Delta\chi^2\approx7.53$
+(AIC $\approx+3.53$) for CPL. After including this nuisance, CPL adds only
+$\Delta\chi^2\approx0.87$ and is AIC-disfavored.
+A public-data Cobaya cross-check using DESI DR1 BAO, a compressed CMB prior on
+$\Omega_m h^2$, and the Union3 compressed likelihood gives the same qualitative
+result: CPL improves $\chi^2$ by $8.29$ without the nuisance mode, but only by
+$0.52$ after the nuisance mode is included, with the CPL+nuisance posterior shifting
+close to $\Lambda$CDM ($w_0=-0.999$, $w_a=-0.192$).
+\textbf{A new full-likelihood cross-check}---Planck NPIPE CamSpec TTTEEE plus
+low-$\ell$ TT/EE, DESI DR1 BAO, and the Union3 likelihood with the nuisance amplitude
+sampled directly (four MCMC chains; the means converged to $R-1=0.047$, the bounds criterion more weakly, $R-1\approx0.15$)---confirms this: without the nuisance,
+CPL is preferred over $\Lambda$CDM by AIC gain $+8.42$ ($w_0=-0.677\pm0.113$,
+$w_a=-1.136\pm0.438$); once the nuisance is marginalized the CPL preference is removed
+(AIC gain $-0.38$ relative to $\Lambda$CDM$+$nuisance), with the posterior shifting to
+$w_0=-0.933\pm0.129$, $w_a=-0.501\pm0.400$ and a recovered amplitude
+$a=0.029\pm0.010$ consistent with the compressed-data value.
+Additional robustness tests (81 template variants; a 200-template random null test;
+leave-one-region-out; cumulative low-$z$ node removal) strengthen the diagnostic.
+The dynamical-dark-energy preference is weakened from $\sim2.4\sigma$ to $\sim1.6\sigma$
+but not entirely eliminated, consistent with the partial weakening already seen in the
+official Union3.1 joint analyses. The definitive test remains to rerun the official
+DESI$+$CMB$+$Union3 $w_0$--$w_a$ likelihood with an added redshift-dependent nuisance
+parameter.
+\end{abstract}
+
+% ====================================================================
+\section{Introduction}
+
+The DESI 2024 Data Release 1 BAO analysis, combined with CMB and Type~Ia supernova
+data, reports a preference for dynamical dark energy described by the CPL equation of
+state $w(a)=w_0+w_a(1-a)$, with a combined significance of approximately
+$3.4$--$3.5\sigma$ for DESI$+$CMB$+$Union3 \cite{desi2024}. The Union3 compilation
+\cite{rubin2025} contains 2,087 Type~Ia supernovae from 24 surveys spanning
+approximately 7 billion years of cosmic history, compressed into a 22-node
+distance-modulus spline with an associated precision matrix. Individual SN surveys
+cover limited redshift ranges, making multi-survey compilations necessary but
+potentially introducing redshift-dependent systematics at survey boundaries. Related
+work by Efstathiou \cite{efstathiou2025} identified a systematic offset between low-
+and high-redshift supernovae in Pantheon$+$ and DES5Y, and noted that Union3
+individual-SN data were not publicly available for direct analysis. Cort\^es \&
+Liddle \cite{cortes2025}, addressing DESI DR2, further showed that properly accounting
+for the substantial overlap between primary SN compilations reduces the combined
+$\Lambda$CDM exclusion significance to $3.1\sigma$---identical to the DESI BAO$+$CMB
+result without any supernova data; their methodological argument about compilation
+overlap is relevant to DR1-style compilation comparisons as well. Independent
+forecasting work by Truong et al.\ \cite{truong2026}, evaluated at the same
+DESI$+$CMB$+$Union3 best fit, shows that the $w_0$--$w_a$ discriminating power of
+SNe~Ia is concentrated at $z\lesssim0.6$, with low-redshift supernovae primarily
+constraining $w_0$ and a medium-redshift anchor required to make them informative;
+a coherent low-$z$/mid-$z$ distance distortion is therefore precisely the kind of
+systematic direction that can mimic or absorb the dynamical-dark-energy signal,
+which motivates the template form adopted here. The present work
+performs, to the best of the author's knowledge, the first compressed-data robustness
+test of this kind specifically for Union3, using the publicly available
+\texttt{lcfit\_Union3.tar.gz} and compressed precision matrix from the
+\texttt{rubind/union3\_release} repository.
+
+% ====================================================================
+\section{Data and Method}
+
+We use the public files \texttt{mu\_mat\_union3\_cosmo=2\_mu.fits} and
+\texttt{lcfit\_Union3.tar.gz} from the \texttt{rubind/union3\_release} GitHub
+repository \cite{data}. The FITS matrix structure is: \texttt{mat[0,1:]} $=z$ nodes (22 values),
+\texttt{mat[1:,0]} $=\mu$ values, \texttt{mat[1:,1:]} $=$ precision matrix $P$
+($22\times22$). The magnitude offset $M$ is analytically marginalized in all fits via
+GLS; the nuisance amplitude $a$ is also analytically marginalized when included. For
+node-removal tests, the covariance matrix $C=P^{-1}$ is subselected and re-inverted
+correctly. The primary nuisance template is
+\begin{equation}
+T(z)=G(z;0.09,0.06)-G(z;0.775,0.10),
+\end{equation}
+standardized to zero mean and unit RMS, where $G(z;c,s)=\exp[-\tfrac12((z-c)/s)^2]$.
+Template centers were placed at known survey-composition transitions (not optimized
+over the data): the low-$z$ anchor region dominated by SDSS/Foundation/Pan-STARRS
+($z\approx0.09$) and the mid-$z$ transition into SNLS/ESSENCE/DES3\_Deep
+($z\approx0.775$). Quality-cut pass fractions differ between these zones: $0.718$ at
+$z\approx0.10$ versus $0.952$ at $z\approx0.75$.
+
+For the public joint cross-check we use the Cobaya DESI DR1 BAO likelihood, a
+compressed CMB prior $\Omega_m h^2=0.1430\pm0.0020$ (Planck 2018 \cite{planck2018}; deliberately
+broadened from the Planck best-fit $\sigma=0.0011$ as a conservative choice), and the
+Union3 compressed likelihood. Sampled parameters: $H_0$ (flat prior 55--80
+km/s/Mpc), $\Omega_m$ (flat 0.1--0.6), $w_0$ (flat $-3$ to $1$), $w_a$ (flat $-3$ to
+$2$), and nuisance amplitude $a$ (flat $-0.5$ to $0.5$ mag). Flat geometry and standard
+neutrino content ($\Sigma m_\nu=0.06$ eV) assumed; sound horizon fixed at
+$r_d=147.09$ Mpc. Within-redshift $D_M$--$D_H$ BAO correlations are included;
+between-redshift-bin correlations are set to zero. We note that Kim \cite{kim2024}
+showed that the Union3 compressed product distributes a posterior under a spline-node
+prior rather than a raw likelihood, which explains why proxy baseline CPL best-fits
+differ slightly from the official DESI result; this does not affect the relative CPL
+vs CPL$+$nuisance comparison.
+
+% ====================================================================
+\section{Union3 Compressed-Data Results}
+
+Table~\ref{tab:protocol} summarises the protocol verification. The core fixed-$\Omega_m$
+diagnostics reproduce to rounding precision. A low-minus-mid step template also gives a
+strong improvement, confirming that the effect is not specific to the Gaussian
+functional form.
+
+\begin{table}[h]
+\centering
+\caption{Protocol verification summary.}
+\label{tab:protocol}
+\small\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lccl}
+\toprule
+Test & Claimed & Verified & Status \\
+\midrule
+$\Omega_m$ best-fit ($\Lambda$CDM free) & 0.356 & 0.3559 & Reproduced \\
+$\chi^2$ at best-fit & 23.96 & 23.958 & Reproduced \\
+DESI-like $\Omega_m$ penalty & 5.15 & 5.152 & Reproduced \\
+CPL $\Delta\chi^2$ / AIC & 7.53 / $+3.53$ & 7.536 / $+3.536$ & Reproduced \\
+Low-mid Gaussian $\Delta\chi^2$ / AIC & 17.12 / $+15.12$ & 17.120 / $+15.120$ & Reproduced \\
+Color $\Delta\chi^2$ / AIC & 6.52 / $+4.52$ & 2.947 / $+0.947$ & Weighting-dependent \\
+CPL after low-mid / AIC & 0.87 / $-3.13$ & 0.870 / $-3.130$ & Reproduced \\
+Low-mid prior threshold $\sigma_a\ge0.005$ mag & 0.005 mag & RMS & Reproduced \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ====================================================================
+\section{Joint DESI DR1 BAO + CMB + Union3 Public Cross-Check (compressed CMB prior)}
+
+We ran a public-data Cobaya cross-check using the DESI DR1 BAO likelihood, a compressed
+CMB prior, and the Union3 compressed likelihood. This is stronger than a simple proxy
+grid scan, but it is still not the official DESI$+$CMB$+$Union3 full likelihood because
+the CMB information is compressed and the Union3 nuisance parameter is added externally.
+
+\begin{table}[h]
+\centering
+\caption{Public-data joint model comparison (compressed CMB prior). AIC gain
+$=\Delta\chi^2-2k$, where $k$ is the number of additional parameters vs $\Lambda$CDM.
+The highlighted row shows that CPL adds only $\Delta\chi^2=0.52$ once the nuisance
+direction is included.}
+\label{tab:proxy}
+\begin{tabular}{lcccccc}
+\toprule
+Model & $H_0$ & $w_0$ & $w_a$ & $a_\mathrm{nuis}$ & best-sample $\chi^2$ & $\Delta\chi^2$ / AIC gain \\
+\midrule
+$\Lambda$CDM            & 68.77 & ---     & ---     & ---    & 41.24 & --- \\
+CPL                     & 66.64 & $-0.688$ & $-1.070$ & ---   & 32.95 & $+8.29$ / $+4.29$ \\
+$\Lambda$CDM $+$ nuis.  & 69.09 & ---     & ---     & 0.0279 & 25.04 & $+16.20$ / $+14.20$ \\
+CPL $+$ nuisance        & 69.79 & $-0.999$ & $-0.192$ & 0.0306 & 24.51 & $+16.73$ / $+10.73$ \\
+\midrule
+CPL vs $\Lambda$CDM$+$nuis. & & & & & & $+0.52$ / $-3.48$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Without the nuisance mode, CPL improves $\chi^2$ by $8.29$ and shifts to $w_0=-0.688$,
+$w_a=-1.070$, consistent with published DESI DR1$+$CMB$+$Union3 results. After including
+the nuisance, CPL improves $\chi^2$ by only $0.52$ relative to $\Lambda$CDM$+$nuisance
+(AIC $-3.48$), while the CPL$+$nuisance mean shifts to $w_0=-0.999$, $w_a=-0.192$---close
+to $\Lambda$CDM in this proxy analysis.
+
+% ====================================================================
+\section{Full-Likelihood Cross-Check (Planck NPIPE CamSpec + DESI DR1 BAO + Union3)}
+\label{sec:fullplanck}
+
+We repeated the four-model comparison with the full likelihood, replacing the
+compressed CMB prior of Section~4 with Planck NPIPE CamSpec TTTEEE plus low-$\ell$
+TT/EE, and adding the redshift-dependent nuisance parameter directly inside the Union3
+likelihood (amplitude $a$). Four MCMC chains were run per model; the Gelman--Rubin
+convergence on the parameter means reached $R-1=0.047$, while the more stringent
+bounds (credible-interval) criterion was weaker, $R-1\approx0.15$. The full-likelihood
+comparison should therefore be regarded as a public cross-check rather than
+collaboration-grade parameter estimation. This realizes the falsification test of
+Section~10 within the public pipeline, with the nuisance mode marginalized rather
+than added externally.
+
+\begin{table}[h]
+\centering
+\caption{Full-likelihood model comparison (Planck NPIPE CamSpec TTTEEE $+$ low-$\ell$
+TT/EE $+$ DESI DR1 BAO $+$ Union3). Four MCMC chains per model (means $R-1=0.047$,
+bounds $R-1\approx0.15$). Quoted $\chi^2$ are the best values among the MCMC samples
+(no separate minimizer was run); the present table is therefore an MCMC best-sample
+cross-check, and a separate minimizer run would be required for final best-fit
+publication numbers. AIC gain $=\Delta\chi^2-2k$ relative to
+$\Lambda$CDM; positive $=$ favoured. The highlighted comparison shows that once the
+nuisance direction is marginalized, the CPL parameters ($w_0,w_a$) no longer improve AIC.}
+\label{tab:fullplanck}
+\small\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lcccccc}
+\toprule
+Model & $H_0$ & $w_0$ & $w_a$ & $a_\mathrm{nuis}$ & best-sample $\chi^2$ & $\Delta\chi^2$ / AIC gain \\
+\midrule
+$\Lambda$CDM            & 67.8 & ---              & ---              & ---                & 11007.56 & --- \\
+CPL                     & 66.4 & $-0.677\pm0.113$ & $-1.136\pm0.438$ & ---                & 10995.14 & $+12.42$ / $+8.42$ \\
+$\Lambda$CDM $+$ nuis.  & 68.0 & ---              & ---              & $0.027\pm0.010$    & 10992.23 & $+15.33$ / $+13.33$ \\
+CPL $+$ nuisance        & 69.3 & $-0.933\pm0.129$ & $-0.501\pm0.400$ & $0.029\pm0.010$    & 10988.61 & $+18.95$ / $+12.95$ \\
+\midrule
+\multicolumn{6}{l}{CPL $+$ nuisance \emph{vs} $\Lambda$CDM $+$ nuisance}
+                        & $+3.62$ / $\mathbf{-0.38}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Without the nuisance mode, CPL is strongly preferred over $\Lambda$CDM
+($\Delta\chi^2=12.42$, AIC gain $+8.42$), with $w_0=-0.677\pm0.113$,
+$w_a=-1.136\pm0.438$---a posterior mean lying $2.4\sigma$ from $\Lambda$CDM in the
+$w_0$--$w_a$ plane (Gaussian-equivalent of the 2D Mahalanobis distance $r=2.86$),%
+\footnote{The equivalent one-dimensional significance is the two-sided Gaussian tail
+enclosing the same probability as the 2D Mahalanobis ellipse,
+$P=1-\exp(-r^2/2)$; i.e.\ $\mathrm{erf}(\sigma/\sqrt2)=1-\exp(-r^2/2)$. This maps
+$r=2.86\to2.4\sigma$ and $r=2.11\to1.6\sigma$.}
+consistent with the published DESI DR1$+$CMB$+$SN preference. Including the nuisance
+parameter yields $a=0.029\pm0.010$ ($\sim2.8\sigma$ from zero, consistent with the
+compressed-data amplitude) and shifts the posterior to $w_0=-0.933\pm0.129$,
+$w_a=-0.501\pm0.400$, now $1.6\sigma$ from $\Lambda$CDM ($r=2.11$).
+
+The decisive comparison is CPL$+$nuisance versus $\Lambda$CDM$+$nuisance. Once the
+nuisance direction is marginalized, adding the CPL parameters improves the best-fit
+$\chi^2$ by only $3.62$ for two extra parameters, corresponding to an AIC gain of
+$-0.38$: the strong AIC preference for dynamical dark energy ($+8.42$ relative to
+$\Lambda$CDM without the nuisance) is removed. The full-likelihood result therefore
+confirms the compressed-data analysis: the Union3 low-$z$/mid-$z$ nuisance direction is
+favoured by the data and absorbs most of the dynamical-dark-energy preference. As in the
+compressed proxy, the effect weakens but does not entirely eliminate the preference (the
+shift is from $\sim2.4\sigma$ to $\sim1.6\sigma$, and the residual CPL AIC penalty is
+marginal), consistent with the partial weakening already seen in the official Union3.1
+joint analyses (Section~6).
+
+\begin{figure}[h]
+\centering
+\figorbox{fullplanck_w0wa_desi.pdf}{0.75\textwidth}{w0-wa: DESI official (black), this work CPL (blue), CPL+nuisance (green), LCDM star.}
+\caption{Full-likelihood joint cross-check in the $w_0$--$w_a$ plane. Black contours:
+DESI DR1 official $w_0w_a$CDM posterior (DESI$+$CMB$+$Union3, \texttt{plik} TT,TE,EE).
+Blue: this work's CPL (NPIPE CamSpec); green: this work's CPL$+$nuisance. Red star marks
+$\Lambda$CDM ($w_0=-1$, $w_a=0$). This work's CPL reproduces the official DESI contour
+($w_0=-0.68$, $w_a=-1.14$ vs DESI $w_0=-0.64$, $w_a=-1.30$), the small offset being
+consistent with the different CMB likelihood choice; marginalizing the Union3 nuisance
+direction (green) shifts the posterior toward $\Lambda$CDM ($w_0=-0.93$, $w_a=-0.50$),
+from $\sim2.4\sigma$ to $\sim1.6\sigma$.}
+\label{fig:fullplanck}
+\end{figure}
+
+% ====================================================================
+\section{Three-Version Progression: Union3 to Union3.1}
+
+Hoyt et al.\ \cite{hoyt2026} published host-galaxy mass re-measurements for
+approximately 2,000 Union3 supernovae, finding that low-$z$ ($<0.10$) host-galaxy
+stellar masses were systematically overestimated, reducing a previously reported
+$>0.03$ mag low-$z$ distance offset to $\approx0.01$ mag. The updated cosmological
+framework (UNITY1.8) was presented by Rubin et al.\ \cite{rubin2026}. Applying the same
+nuisance template to all three public compressed matrices shows the nuisance amplitude
+decreasing monotonically, while the CPL AIC gain becomes small by AIC comparison in the
+Union3.1 versions. The nuisance amplitude decrease of $0.0056$ mag
+($0.0279\to0.0223$) is of the same order of magnitude as the relative low-$z$ distance
+shift of $0.010$--$0.013$ mag applied in the Union3.1 corrections. This correspondence
+was not built into the template---the amplitude emerged from fitting the compressed
+data, and is consistent with the template tracing a low-$z$ systematic direction that
+is reduced, but not removed, by the Union3.1/UNITY processing. This monotonic decrease
+also bears directly on the central interpretive question of whether the template
+absorbs a genuine systematic or, instead, real cosmological signal: the underlying
+$w_0$--$w_a$ cosmology is identical across the three compressed matrices, so a template
+tracing a true dark-energy signal would be expected to retain its amplitude. Instead
+the amplitude falls in step with the documented low-$z$ host-mass correction of Hoyt
+et al.\ \cite{hoyt2026}---the behaviour expected if the template is tracing that
+corrected systematic rather than the dynamical-dark-energy signal. Importantly, this
+comparison is a heuristic compressed-data diagnostic only and should not be conflated
+with the updated official joint analyses: Hoyt et al.\ \cite{hoyt2026} report a
+$\approx3.4\sigma$ deviation from $\Lambda$CDM in the official BAO$+$CMB$+$Union3.1
+combination, and Rubin et al.\ \cite{rubin2026} report $\approx2.6\sigma$ tension with
+UNITY1.8. The official joint preference is thus weakened but not eliminated by the
+Union3.1 corrections.
+
+\begin{table}[h]
+\centering
+\caption{Three-version comparison. [a] CPL $\Delta\chi^2$ values marked $\approx$ are
+grid-scan approximations with $\approx0.02$ uncertainty; the scipy-optimize value for
+Union3 original is 7.536 (Table~\ref{tab:protocol}). Nuisance amplitude decreases
+monotonically across all three versions.}
+\label{tab:threeversion}
+\begin{tabular}{lccc}
+\toprule
+Metric & Union3 original & Union3.1 UNITY1.7 & Union3.1 UNITY1.8 \\
+\midrule
+$\Omega_m$ best-fit & 0.3559 & 0.3424 & 0.3340 \\
+DESI penalty $\Delta\chi^2$ & 5.152 & 3.256 & 2.347 \\
+CPL $\Delta\chi^2$ [a] & $\approx7.52$ & $\approx4.74$ & $\approx4.74$ \\
+CPL AIC gain [a] & $\approx+3.52$ & $\approx+0.74$ & $\approx+0.74$ \\
+Low-mid Gaussian $\Delta\chi^2$ & 17.120 & 12.474 & 11.958 \\
+Low-mid Gaussian AIC gain & $+15.12$ & $+10.47$ & $+9.96$ \\
+Nuisance amplitude (mag) & 0.0279 & 0.0233 & 0.0223 \\
+CPL after nuisance AIC & $-3.13$ & $-2.83$ & $-2.05$ \\
+Low-$z$ shift vs Union3 & --- & $-0.010$ & $-0.013$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ====================================================================
+\section{Additional Robustness Tests}
+
+The robustness tests in this section use the same fixed-$\Omega_m=0.2975$ protocol as
+Table~\ref{tab:protocol}; their $\Delta\chi^2$ values are directly comparable to the
+Table~\ref{tab:protocol} results and are reproducible from the GitHub repository CSV
+outputs. CPL$+$nuisance $\Delta\chi^2$ values in reduced-node fits can be
+optimizer-sensitive and should not be interpreted as precise parameter estimates.
+
+\subsection{Template Robustness Grid}
+
+To test whether the result depends on the exact Gaussian centers and widths, we scanned
+81 nearby low-$z$ / mid-$z$ template variants. The nuisance improvement remains positive
+in all 81 cases. The conclusion does not depend on the primary template sitting near
+the top of this grid (original $17.12$ vs grid maximum $17.45$): even the grid
+\emph{median} ($13.18$) comfortably exceeds the CPL improvement ($7.54$), so any
+representative low-$z$/mid-$z$ template in this family out-performs CPL.
+
+\begin{table}[h]
+\centering
+\caption{Template robustness grid summary.}
+\label{tab:grid}
+\begin{tabular}{lc}
+\toprule
+Quantity & Value \\
+\midrule
+Number of templates & 81 \\
+$\Lambda$CDM $\chi^2$ (fixed $\Omega_m$) & 29.110 \\
+CPL $\chi^2$ (fixed $\Omega_m$) & 21.574 \\
+CPL $\Delta\chi^2$ vs $\Lambda$CDM & 7.536 \\
+Original nuisance $\Delta\chi^2$ & 17.120 \\
+Grid median nuisance $\Delta\chi^2$ & 13.176 \\
+Grid min nuisance $\Delta\chi^2$ & 9.666 \\
+Grid max nuisance $\Delta\chi^2$ & 17.454 \\
+Median CPL $\Delta\chi^2$ after nuisance & 0.413 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Random Smooth-Template Null Test}
+
+A random smooth-template null test compares the original low-$z$ / mid-$z$ template with
+200 random smooth redshift templates generated as follows: each random template is a
+difference of two Gaussians with centers drawn uniformly from $z\in[0.05,0.40]$ and
+$z\in[0.40,1.50]$ respectively, and widths drawn uniformly from $[0.04,0.20]$, with
+random sign; each template is then standardized to zero mean and unit RMS on the 22
+nodes before fitting (random seed 42 for reproducibility). No random template reached
+the original template improvement; conservatively, the empirical tail probability is
+$p\approx1/201$ (add-one estimator).
+
+\begin{table}[h]
+\centering
+\caption{Random smooth-template null test (fixed-$\Omega_m=0.2975$ protocol). The
+original template $\Delta\chi^2=17.120$; the maximum random template reached only
+12.433. The 0/200 exceedance result is a conservative ranking diagnostic rather than
+proof of template uniqueness.}
+\label{tab:null}
+\begin{tabular}{lc}
+\toprule
+Quantity & Value \\
+\midrule
+Number of random templates & 200 \\
+Original template $\Delta\chi^2$ (fixed $\Omega_m$) & 17.120 \\
+Random median $\Delta\chi^2$ & 1.357 \\
+Random 95th percentile $\Delta\chi^2$ & 8.997 \\
+Random max $\Delta\chi^2$ & 12.433 \\
+Empirical tail probability & 0/200; add-one $p\approx1/201$ ($\approx0.005$) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+A sharper version of this test isolates the structure the template captures
+\emph{beyond} CPL. For each template we compute the improvement it adds once CPL
+is already in the model,
+$\Delta\chi^2_{\text{after CPL}}=\chi^2(\text{CPL})-\chi^2(\text{CPL}+\text{template})$,
+which removes the part of the residual that CPL can itself absorb (cf.
+Section~\ref{sec:overlap}). Applied to the same 200-template ensemble, the
+original low-$z$/mid-$z$ template adds $\Delta\chi^2=10.45$ after CPL, exceeding
+\emph{every} random smooth template (maximum $8.99$, median $1.33$; add-one
+$p\approx1/201$; Table~\ref{tab:nullaftercpl}). The structure the template
+captures beyond CPL is therefore not generic overfitting of a flexible direction:
+no random smooth template orthogonal-enough to CPL reaches it. As in the standalone
+test this is a conservative ranking diagnostic rather than a proof of uniqueness.
+
+\begin{table}[h]
+\centering
+\caption{Beyond-CPL (orthogonalized) null test: improvement added \emph{after} CPL,
+$\Delta\chi^2_{\text{after CPL}}$, for the original template versus 200 random smooth
+templates (same recipe and fixed-$\Omega_m=0.2975$ protocol as Table~\ref{tab:null}).
+Removing the CPL-absorbable part lowers the random ceiling from $12.4$ to $9.0$, yet
+the original template still exceeds all 200.}
+\label{tab:nullaftercpl}
+\begin{tabular}{lc}
+\toprule
+Quantity & Value \\
+\midrule
+Original template $\Delta\chi^2_{\text{after CPL}}$ & 10.45 \\
+Random median $\Delta\chi^2_{\text{after CPL}}$ & 1.33 \\
+Random 95th percentile $\Delta\chi^2_{\text{after CPL}}$ & 5.42 \\
+Random max $\Delta\chi^2_{\text{after CPL}}$ & 8.99 \\
+Empirical tail probability & 0/200; add-one $p\approx1/201$ ($\approx0.005$) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Leave-One-Redshift-Region-Out Test}
+
+We removed broad redshift intervals one at a time and repeated the four-model
+compressed-data fit. The nuisance improvement remains substantial in every cut, while
+CPL adds little after nuisance is included. The largest weakening occurs when
+$z=0.10$--$0.30$ is removed, localizing part of the signal to that low-redshift
+transition region.
+
+\begin{table}[h]
+\centering
+\caption{Leave-one-redshift-region-out robustness test. Only $\Delta\chi^2$ differences
+are interpreted; cosmological parameter values in reduced-node fits are diagnostic and
+may be weakly constrained.}
+\label{tab:loo}
+\begin{tabular}{lccccc}
+\toprule
+Case & Removed $z$ & $N$ kept & $\Delta\chi^2$ CPL & $\Delta\chi^2$ nuisance & CPL after nuisance \\
+\midrule
+Full sample   & none        & 22 & 7.54  & 17.12 & 0.87 \\
+Very low $z$  & 0.00--0.10  & 21 & 7.58  & 16.76 & 0.82 \\
+Low $z$       & 0.10--0.30  & 18 & 2.80  & 7.65  & 0.48 \\
+Mid $z$       & 0.30--0.70  & 14 & 13.26 & 17.57 & 0.30 \\
+High-mid $z$  & 0.70--1.00  & 17 & 7.19  & 12.10 & 0.46 \\
+High $z$      & 1.00$+$     & 18 & 8.05  & 17.51 & 1.38 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Cumulative Low-$z$ Node Removal}
+
+As a complement to the broad leave-one-region-out test, we progressively removed
+low-redshift nodes below successively higher thresholds and re-evaluated CPL on the
+remaining nodes. This directly tests the concern that the nuisance template may
+effectively remove low-$z$ supernova information. Removing only the single lowest node
+($z<0.08$ or $<0.10$) leaves CPL essentially unchanged ($\Delta\chi^2\approx7.58$). The
+CPL preference falls sharply only when nodes up to $z<0.12$ are removed
+($\Delta\chi^2=2.29$, AIC $-1.71$) and is nearly eliminated by $z<0.20$
+($\Delta\chi^2=0.87$, AIC $-3.13$). This localizes the signal to the
+$z=0.10$--$0.20$ transition region, consistent with the low-$z$ / mid-$z$ nuisance
+template and not attributable to a single outlier node.
+
+\begin{table}[h]
+\centering
+\caption{CPL preference after cumulative removal of low-redshift nodes. The sharp drop
+between $z<0.10$ and $z<0.12$ localizes the signal to the $z=0.10$--$0.20$
+survey-transition region.}
+\label{tab:cumulative}
+\begin{tabular}{lccc}
+\toprule
+Removed nodes & $N$ kept & CPL $\Delta\chi^2$ & CPL AIC gain \\
+\midrule
+None (full sample) & 22 & 7.536 & $+3.536$ \\
+$z<0.08$ & 21 & 7.581 & $+3.581$ \\
+$z<0.10$ & 21 & 7.581 & $+3.581$ \\
+$z<0.12$ & 20 & 2.286 & $-1.714$ \\
+$z<0.20$ & 19 & 0.871 & $-3.129$ \\
+$z<0.30$ & 17 & 1.155 & $-2.845$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ====================================================================
+\subsection{Low-$z$ / Mid-$z$ Component Decomposition}
+\label{sec:components}
+
+To see which redshift zone drives the result, and to address the concern that the
+low-$z$ arm overlaps the peculiar-velocity region, we fit the two Gaussian arms of
+$T$ as independent nuisance amplitudes. Individually, the low-$z$ arm $G(z;0.09,0.06)$
+gives $\Delta\chi^2=11.69$ and the mid-$z$ arm $G(z;0.775,0.10)$ gives
+$\Delta\chi^2=4.81$; fitted together (two amplitudes) they give $\Delta\chi^2=17.13$,
+essentially the single-template value, confirming the two arms are nearly independent
+in the precision metric. The CPL-absorbing power is concentrated in the low-$z$ arm:
+CPL adds only $\Delta\chi^2=0.88$ after the low-$z$ arm alone, but still
+$\Delta\chi^2=7.45$ after the mid-$z$ arm alone---the mid-$z$ arm is nearly orthogonal
+to CPL. Both arms nonetheless carry beyond-CPL structure ($5.04$ and $4.73$ added
+after CPL, respectively).
+
+Crucially, the cumulative node-removal test (Table~\ref{tab:cumulative}) localizes the
+low-$z$ power to $z\approx0.10$--$0.20$, not to the lowest node $z=0.05$ where peculiar
+velocities dominate: removing nodes only up to $z<0.10$ leaves CPL essentially
+unchanged, and the preference collapses only once $z<0.12$--$0.20$ is removed. The
+low-$z$ arm is thus tracing the $z\approx0.10$--$0.20$ survey-transition region---the
+same low-$z$ range corrected by the Hoyt et al.~\cite{hoyt2026} host-mass re-measurement
+(Section~6)---rather than the very-low-$z$ peculiar-velocity zone.
+
+\begin{table}[h]
+\centering
+\caption{Decomposition of the template into its two Gaussian arms (fixed
+$\Omega_m=0.2975$ protocol). The low-$z$ arm carries most of the CPL-absorbing power;
+the mid-$z$ arm is nearly orthogonal to CPL.}
+\label{tab:components}
+\begin{tabular}{lccc}
+\toprule
+Component & $\Delta\chi^2$ alone & CPL after it & it after CPL \\
+\midrule
+Low-$z$ arm $G(z;0.09,0.06)$  & 11.69 & 0.88 & 5.04 \\
+Mid-$z$ arm $G(z;0.775,0.10)$ & 4.81  & 7.45 & 4.73 \\
+Both arms (2 amplitudes)      & 17.13 & --   & --   \\
+Full template $T$             & 17.12 & 0.87 & 10.45 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ====================================================================
+\subsection{Template--CPL Overlap (Degeneracy Test)}
+\label{sec:overlap}
+
+A natural concern is that the template $T(z)$ merely reproduces the CPL distance
+deformation, so that its improvement is the dynamical--dark-energy signal relabeled.
+We test this directly in the Union3 precision metric, with the marginalized offset $M$
+projected out. The angle between $T$ and the CPL best-fit deformation
+$\delta\mu_{\rm CPL}=\mu_{\rm CPL}-\mu_{\Lambda\rm CDM}$ is $\cos\theta=0.79$
+($\theta\approx38^\circ$); projecting $T$ onto the full CPL tangent subspace
+$\{\partial\mu/\partial w_0,\,\partial\mu/\partial w_a\}$ gives the same value, with
+$63\%$ of $T$ lying inside the CPL subspace and $37\%$ orthogonal to it. The two
+directions are thus strongly aligned but not degenerate. The nested $\Delta\chi^2$
+decomposition (Table~\ref{tab:overlap}) is markedly asymmetric: once $T$ is included CPL
+adds only $\Delta\chi^2=0.87$, whereas once CPL is included $T$ still adds
+$\Delta\chi^2=10.45$. CPL is therefore almost entirely contained in $T$ ($88\%$ of its
+pull is shared), while most of $T$'s improvement is structure CPL cannot produce,
+localized at the $z\approx0.78$ survey transition (Figure~\ref{fig:overlap}).
+Consistently, the recovered amplitude \emph{persists} when CPL is free in the model:
+$a=0.0279$ for $\Lambda$CDM$+$nuisance (matching the compressed-data value) and
+$a=0.0357$ for CPL$+$nuisance.
+
+Were $T$ merely the dark-energy signal in disguise, $\theta$ would vanish, $T$ would add
+nothing after CPL, and $a$ would collapse toward zero; none of these holds. This rules
+out exact $T$--CPL degeneracy. It does not by itself distinguish a systematic from a
+signal---goodness-of-fit cannot---which is why the discriminating evidence remains the
+host-mass correspondence of Section~6 and the survey-composition
+transitions, not the fit alone. The large $\Delta\chi^2=10.45$ that $T$ adds after CPL
+reflects genuine residual structure rather than overfitting: the random smooth-template
+null test of Section~7.2 bounds the overfitting contribution (random templates reach at
+most $\Delta\chi^2=12.4<17.1$), and the quantity relevant to the dark-energy claim is the
+$0.87$ that CPL adds after $T$, not the $10.45$.
+
+\begin{table}[h]
+\centering
+\caption{Template--CPL overlap (fixed $\Omega_m=0.2975$ protocol). The angle $\theta$
+is measured in the Union3 precision metric with the magnitude offset $M$ marginalized.
+All inputs reproduce the Table~\ref{tab:protocol} diagnostics to rounding precision.}
+\label{tab:overlap}
+\begin{tabular}{lc}
+\toprule
+Quantity & Value \\
+\midrule
+$\cos\theta$ ($T$ vs CPL deformation)          & $0.79$ \\
+$\theta$ ($T$ vs CPL 2D subspace)              & $37.6^\circ$ \\
+$T$ inside CPL subspace ($\cos^2\theta$)       & $63\%$ \\
+$T$ orthogonal to CPL ($\sin^2\theta$)         & $37\%$ \\
+CPL $\Delta\chi^2$ added after $T$             & $0.87$ \\
+$T$ $\Delta\chi^2$ added after CPL             & $10.45$ \\
+shared (overlap) $\Delta\chi^2$                & $6.67$ \\
+amplitude $a$, $\Lambda$CDM$+$nuisance (mag)   & $0.0279$ \\
+amplitude $a$, CPL$+$nuisance (mag)            & $0.0357$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\figorbox{overlap_angle.png}{0.95\textwidth}{(a) T(z) vs its best CPL projection; (b) nested chi2 ledger: CPL after T = 0.87, T after CPL = 10.45.}
+\caption{Template--CPL overlap in the Union3 precision metric.
+\textbf{(a)} The nuisance template $T(z)$ (blue) and its best projection onto the CPL
+subspace, $T_\parallel$ (red dashed). CPL reproduces $T$ at low redshift but cannot fit
+the sharp $z\approx0.78$ step (shaded $T_\perp$, the $37\%$ of $T$ orthogonal to all
+$w_0$--$w_a$ deformations). \textbf{(b)} Nested $\Delta\chi^2$ ledger: CPL adds only
+$0.87$ after $T$, but $T$ adds $10.45$ after CPL---CPL lives inside $T$, while $T$ reaches
+well beyond CPL.}
+\label{fig:overlap}
+\end{figure}
+
+% ====================================================================
+\section{Independent Reproduction}
+
+An independent reproduction of the Union3.1 UNITY1.8 results directly from the raw FITS
+matrix (without astropy, using manual header parsing and big-endian float64 reading)
+confirmed: $\Delta\chi^2(\mathrm{CPL})=4.7393$, $\Delta\chi^2(\text{Gaussian
+template})=11.9581$, $\Delta\chi^2(\text{low-minus-mid step})=11.7335$, and
+$\Delta\chi^2(\text{CPL after step})=0.1243$. All values match to rounding precision.
+The reproduction also confirmed that node-removal tests must subselect the covariance
+matrix $C=P^{-1}$ and re-invert; subsetting the precision matrix directly gives
+incorrect results.
+
+% ====================================================================
+\section{Limitations}
+
+\begin{itemize}
+\item Compressed-data and public-data proxy analyses, plus a full-likelihood
+cross-check in which the nuisance mode is added inside a public reimplementation of the
+Union3 likelihood---not as an official, internally validated Union3/DESI systematic
+model. These tests are not a replacement for the official DESI$+$CMB$+$Union3 MCMC
+likelihood with an internally modelled systematic.
+\item The full-likelihood cross-check uses Planck NPIPE CamSpec (not the official DESI
+\texttt{plik} choice) and omits CMB lensing; the compressed cross-check represents CMB
+by a Gaussian prior on $\Omega_m h^2$.
+\item The Union3 compressed product distributes a posterior under a spline-node prior
+\cite{kim2024}; this affects absolute contour placement more than relative model
+comparisons.
+\item The low-$z$ template component overlaps redshift ranges where peculiar velocities
+and survey-composition changes can introduce coherent distance distortions; the
+component decomposition (Section~\ref{sec:components}) localizes the CPL-absorbing power
+to $z\approx0.10$--$0.20$ rather than the lowest-$z$ peculiar-velocity zone, but does not
+fully exclude a low-$z$ systematic contribution.
+\item These tests do not prove that DESI dynamical dark energy is false. They identify a
+robustness concern in the Union3 contribution.
+\item Analysis was conducted with AI assistance. All numerical results are reproducible
+from public data and scripts.
+\end{itemize}
+
+% ====================================================================
+\section{Recommended Falsification Test}
+
+The definitive test is to rerun the official DESI $+$ CMB $+$ Union3 $w_0$--$w_a$
+likelihood with an added low-$z$ / mid-$z$ redshift-dependent nuisance parameter and
+compare $\Lambda$CDM$+$nuisance, CPL, and CPL$+$nuisance. If CPL loses AIC support after
+the nuisance is included, the Union3 contribution to the $w_0$--$w_a$ preference is
+systematics-limited. If the preference persists, the concern is resolved. The
+full-likelihood cross-check of Section~\ref{sec:fullplanck} carries out this comparison
+in the public pipeline and finds that CPL does lose AIC support
+($+8.42\to-0.38$) once the nuisance is marginalized; an official internal-systematics
+treatment is the remaining step. The three-version progression (Section~6) suggests
+that as Union3.1 corrections are incorporated into the full joint likelihood, the CPL
+preference may weaken further, consistent with the weakening already observed in
+official Union3.1 joint analyses.
+
+% ====================================================================
+\section{Conclusion}
+
+The Union3 data show sensitivity to a low-$z$ / mid-$z$ nuisance direction in CPL
+robustness tests. A single Gaussian nuisance template improves the fixed-$\Omega_m$
+residuals more than twice as well as CPL ($\Delta\chi^2=17.12$ vs $\approx7.52$) and
+renders CPL AIC-disfavored once included. A compressed-prior Cobaya cross-check gives
+the same qualitative picture (CPL $\Delta\chi^2$ $8.29\to0.52$), and a full-likelihood
+cross-check using Planck NPIPE CamSpec, DESI DR1 BAO, and Union3 confirms it directly:
+the strong AIC preference for CPL ($+8.42$ vs $\Lambda$CDM) is removed once the nuisance
+is marginalized ($-0.38$ vs $\Lambda$CDM$+$nuisance), with the posterior shifting from
+$2.4\sigma$ to $1.6\sigma$ from $\Lambda$CDM and a recovered amplitude
+$a=0.029\pm0.010$ matching the compressed-data value. Template-grid, random-null, and
+leave-one-region-out tests show that the effect is not driven by one exact functional
+form or by one narrow redshift interval. Across Union3, Union3.1 UNITY1.7, and Union3.1
+UNITY1.8, the nuisance amplitude decreases monotonically and the CPL AIC gain becomes
+small, suggesting that the Union3 contribution to the DESI DR1 $w_0$--$w_a$ preference
+is sensitive to a low-$z$ / mid-$z$ systematic direction that is reduced, but not
+removed, in Union3.1. These results motivate a full likelihood reanalysis with an
+explicit redshift-dependent nuisance parameter.
+
+% ====================================================================
+\begin{thebibliography}{9}
+\small
+\bibitem{desi2024} Adame et al.\ (DESI Collaboration) 2024,
+\href{https://arxiv.org/abs/2404.03002}{arXiv:2404.03002} --- DESI DR1 BAO cosmological constraints.
+\bibitem{rubin2025} Rubin D.\ et al.\ 2025,
+\href{https://arxiv.org/abs/2311.12098}{arXiv:2311.12098}, ApJ --- Union3 $+$ UNITY1.5 supernova compilation.
+\bibitem{hoyt2026} Hoyt T., Rubin D.\ et al.\ 2026,
+\href{https://arxiv.org/abs/2601.19424}{arXiv:2601.19424} --- Union3.1 host-galaxy mass re-measurements and low-$z$ distance corrections.
+\bibitem{rubin2026} Rubin D.\ et al.\ 2026,
+\href{https://arxiv.org/abs/2601.19854}{arXiv:2601.19854} --- Union3.1 $+$ UNITY1.8 two-population light-curve standardization framework.
+\bibitem{efstathiou2025} Efstathiou G.\ 2025, MNRAS --- Systematic offset in low-$z$ supernovae in Pantheon$+$ and DES5Y.
+\bibitem{planck2018} Planck Collaboration 2018,
+\href{https://arxiv.org/abs/1807.06209}{arXiv:1807.06209} --- Planck 2018 cosmological parameters.
+\bibitem{kim2024} Kim A.G.\ 2024,
+\href{https://arxiv.org/abs/2412.14181}{arXiv:2412.14181} --- Comments on the Union3 spline-interpolated distance-moduli model.
+\bibitem{cortes2025} Cort\^es M.\ \& Liddle A.R.\ 2025,
+\href{https://arxiv.org/abs/2504.15336}{arXiv:2504.15336} --- On DESI DR2 exclusion of $\Lambda$CDM; principled combination yields $3.1\sigma$.
+\bibitem{data} Data: \texttt{rubind/union3\_release} (GitHub) --- Union3 and Union3.1 compressed likelihood files (public).
+\bibitem{truong2026} Truong J., Aldering G., Perlmutter S., Rubin D., Schlegel D.\ 2026,
+\href{https://arxiv.org/abs/2604.18859}{arXiv:2604.18859} --- Testing $\Lambda$CDM versus dynamical dark energy in one year: a DESI spectroscopic follow-up program for Rubin supernovae.
+\end{thebibliography}
+
+\vspace{1em}
+\noindent\rule{\textwidth}{0.4pt}\\
+\small Jaanus Hass $|$ Independent researcher, Saru, Estonia $|$ \texttt{jaanush@hotmail.com} $|$
+May--June 2026 $|$ Reproduction scripts:
+\href{https://github.com/JaanusHass/union3-lowz-midz-nuisance}{github.com/JaanusHass/union3-lowz-midz-nuisance}
+
+\end{document}
