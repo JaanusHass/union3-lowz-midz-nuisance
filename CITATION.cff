@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite it as below."
+title: "A Low-z / Mid-z Nuisance Mode in the Union3 Compressed Supernova Data: Implications for the DESI DR1 Dynamic Dark Energy Preference"
+authors:
+  - family-names: "Hass"
+    given-names: "Jaanus"
+    email: "jaanush@hotmail.com"
+    affiliation: "Independent researcher, Saru, Estonia"
+version: "1.0"
+date-released: "2026-07-06"
+repository-code: "https://github.com/JaanusHass/union3-lowz-midz-nuisance"
+license: MIT
+keywords:
+  - cosmology
+  - dark energy
+  - Type Ia supernovae
+  - Union3
+  - DESI
+  - systematics
