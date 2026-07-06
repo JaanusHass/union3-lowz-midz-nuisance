@@ -141,7 +141,7 @@ def make_figure(z, T, Tpar, vals, cos2, theta, outdir_paper):
 
     ax1.axhline(0, color="0.7", lw=0.6)
     ax1.fill_between(z, Tpar, T, facecolor="#aec4de", edgecolor="none", lw=0,
-                     zorder=0, label=r"$T_\perp$: beyond CPL reach")
+                     zorder=0, label=r"$T_\perp$: orthogonal to CPL")
     ax1.plot(z, T, "o-", color="#1f4e79", ms=3.6, lw=1.5, label="nuisance template $T(z)$")
     ax1.plot(z, Tpar, "s--", color="#c0392b", ms=2.8, lw=1.4,
              label=r"best CPL fit to $T$  ($T_\parallel$)")
@@ -162,10 +162,10 @@ def make_figure(z, T, Tpar, vals, cos2, theta, outdir_paper):
     ax2.set_xticks(range(4)); ax2.set_xticklabels(labels, fontsize=8)
     ax2.set_ylabel(r"$\Delta\chi^2$ (fixed $\Omega_m$)"); ax2.set_ylim(0, 20.5)
     ax2.text(0.03, 0.96, "(b)", transform=ax2.transAxes, fontsize=9, va="top")
-    ax2.annotate("CPL lives\ninside $T$", xy=(2, 2.4), xytext=(2, 7.0),
+    ax2.annotate("CPL largely\nabsorbed by $T$", xy=(2, 2.4), xytext=(2, 7.0),
                  ha="center", va="bottom", fontsize=8, color="#7a2018",
                  arrowprops=dict(arrowstyle="->", color="#7a2018", lw=0.9))
-    ax2.annotate("but $T$ reaches\nfar beyond CPL", xy=(3, 12.2), xytext=(3, 17.2),
+    ax2.annotate("$T$ has structure\nbeyond CPL", xy=(3, 12.2), xytext=(3, 17.2),
                  ha="center", va="bottom", fontsize=8, color="#16385c",
                  arrowprops=dict(arrowstyle="->", color="#16385c", lw=0.9))
 
