@@ -55,7 +55,7 @@ $\Delta\chi^2\approx0.87$ and is AIC-disfavored.
 A public-data Cobaya cross-check using DESI DR1 BAO, a compressed CMB prior on
 $\Omega_m h^2$, and the Union3 compressed likelihood gives the same qualitative
 result: CPL improves $\chi^2$ by $8.29$ without the nuisance mode, but only by
-$0.52$ after the nuisance mode is included, with the CPL+nuisance posterior shifting
+$0.52$ after the nuisance mode is included, with the CPL+nuisance best-fit solution shifting
 close to $\Lambda$CDM ($w_0=-0.999$, $w_a=-0.192$).
 \textbf{A new full-likelihood cross-check}---Planck NPIPE CamSpec TTTEEE plus
 low-$\ell$ TT/EE, DESI DR1 BAO, and the Union3 likelihood with the nuisance amplitude
@@ -88,7 +88,7 @@ cover limited redshift ranges, making multi-survey compilations necessary but
 potentially introducing redshift-dependent systematics at survey boundaries. Related
 work by Efstathiou \cite{efstathiou2025} identified a systematic offset between low-
 and high-redshift supernovae in Pantheon$+$ and DES5Y, and noted that Union3
-individual-SN data were not publicly available for direct analysis. Cort\^es \&
+individual-SN data were not publicly available for direct analysis. Subsequent analyses have sharpened this question: Huang et al.\ \cite{huang2025} used the intercept of the SN magnitude--redshift relation to argue that correcting a low-$z$ discrepancy in DES5Y reduces the CPL preference to $0.5$--$1.5\sigma$, and Ormondroyd et al.\ \cite{ormondroyd2026} showed via Bayesian model selection that a low-$z$ magnitude offset is favoured over a dynamical reconstruction for DES5Y$+$DESI; most recently Mirpoorian et al.\ \cite{mirpoorian2026} fit a look-back-time-scaled magnitude nuisance jointly with $w_0w_a$CDM on Pantheon$+$, finding negligible impact for uncalibrated SNe. These interpretations remain contested, with Vincenzi et al.\ \cite{vincenzi2025} attributing much of the offset to Malmquist-bias and intrinsic-scatter modelling and the recalibrated DES ``Dovekie'' analysis \cite{popovic2025} continuing to prefer evolving dark energy. Almost all of this work targets DES5Y or Pantheon$+$, whose per-object data are public, which is what makes the Union3-specific test below distinct. Cort\^es \&
 Liddle \cite{cortes2025}, addressing DESI DR2, further showed that properly accounting
 for the substantial overlap between primary SN compilations reduces the combined
 $\Lambda$CDM exclusion significance to $3.1\sigma$---identical to the DESI BAO$+$CMB
@@ -202,7 +202,7 @@ CPL vs $\Lambda$CDM$+$nuis. & & & & & & $+0.52$ / $-3.48$ \\
 Without the nuisance mode, CPL improves $\chi^2$ by $8.29$ and shifts to $w_0=-0.688$,
 $w_a=-1.070$, consistent with published DESI DR1$+$CMB$+$Union3 results. After including
 the nuisance, CPL improves $\chi^2$ by only $0.52$ relative to $\Lambda$CDM$+$nuisance
-(AIC $-3.48$), while the CPL$+$nuisance mean shifts to $w_0=-0.999$, $w_a=-0.192$---close
+(AIC $-3.48$), while the CPL$+$nuisance best-fit solution shifts to $w_0=-0.999$, $w_a=-0.192$---close
 to $\Lambda$CDM in this proxy analysis.
 
 % ====================================================================
@@ -305,7 +305,7 @@ is reduced, but not removed, by the Union3.1/UNITY processing. This monotonic de
 also bears directly on the central interpretive question of whether the template
 absorbs a genuine systematic or, instead, real cosmological signal: the underlying
 $w_0$--$w_a$ cosmology is identical across the three compressed matrices, so a template
-tracing a true dark-energy signal would be expected to retain its amplitude. Instead
+tracing a purely cosmological signal would not naturally be expected to decrease in step with documented low-$z$ host-mass corrections. Instead
 the amplitude falls in step with the documented low-$z$ host-mass correction of Hoyt
 et al.\ \cite{hoyt2026}---the behaviour expected if the template is tracing that
 corrected systematic rather than the dynamical-dark-energy signal. Importantly, this
@@ -615,8 +615,7 @@ amplitude $a$, CPL$+$nuisance (mag)            & $0.0357$ \\
 subspace, $T_\parallel$ (red dashed). CPL reproduces $T$ at low redshift but cannot fit
 the sharp $z\approx0.78$ step (shaded $T_\perp$, the $37\%$ of $T$ orthogonal to all
 $w_0$--$w_a$ deformations). \textbf{(b)} Nested $\Delta\chi^2$ ledger: CPL adds only
-$0.87$ after $T$, but $T$ adds $10.45$ after CPL---CPL lives inside $T$, while $T$ reaches
-well beyond CPL.}
+$0.87$ after $T$, but $T$ adds $10.45$ after CPL: CPL is largely absorbed by $T$, while $T$ contains structure beyond CPL.}
 \label{fig:overlap}
 \end{figure}
 
@@ -663,9 +662,7 @@ from public data and scripts.
 
 The definitive test is to rerun the official DESI $+$ CMB $+$ Union3 $w_0$--$w_a$
 likelihood with an added low-$z$ / mid-$z$ redshift-dependent nuisance parameter and
-compare $\Lambda$CDM$+$nuisance, CPL, and CPL$+$nuisance. If CPL loses AIC support after
-the nuisance is included, the Union3 contribution to the $w_0$--$w_a$ preference is
-systematics-limited. If the preference persists, the concern is resolved. The
+compare $\Lambda$CDM$+$nuisance, CPL, and CPL$+$nuisance. If CPL loses AIC support after the nuisance is included, this would indicate that the Union3 contribution to the $w_0$--$w_a$ preference is strongly sensitive to this systematic-like direction, and would be consistent with a systematics-limited SN contribution. If the preference persists, the concern is resolved. The
 full-likelihood cross-check of Section~\ref{sec:fullplanck} carries out this comparison
 in the public pipeline and finds that CPL does lose AIC support
 ($+8.42\to-0.38$) once the nuisance is marginalized; an official internal-systematics
@@ -706,7 +703,7 @@ explicit redshift-dependent nuisance parameter.
 \href{https://arxiv.org/abs/2601.19424}{arXiv:2601.19424} --- Union3.1 host-galaxy mass re-measurements and low-$z$ distance corrections.
 \bibitem{rubin2026} Rubin D.\ et al.\ 2026,
 \href{https://arxiv.org/abs/2601.19854}{arXiv:2601.19854} --- Union3.1 $+$ UNITY1.8 two-population light-curve standardization framework.
-\bibitem{efstathiou2025} Efstathiou G.\ 2025, MNRAS --- Systematic offset in low-$z$ supernovae in Pantheon$+$ and DES5Y.
+\bibitem{efstathiou2025} Efstathiou G.\ 2025, MNRAS, \href{https://arxiv.org/abs/2408.07175}{arXiv:2408.07175} --- Systematic offset in low-$z$ supernovae in Pantheon$+$ and DES5Y.
 \bibitem{planck2018} Planck Collaboration 2018,
 \href{https://arxiv.org/abs/1807.06209}{arXiv:1807.06209} --- Planck 2018 cosmological parameters.
 \bibitem{kim2024} Kim A.G.\ 2024,
@@ -716,6 +713,16 @@ explicit redshift-dependent nuisance parameter.
 \bibitem{data} Data: \texttt{rubind/union3\_release} (GitHub) --- Union3 and Union3.1 compressed likelihood files (public).
 \bibitem{truong2026} Truong J., Aldering G., Perlmutter S., Rubin D., Schlegel D.\ 2026,
 \href{https://arxiv.org/abs/2604.18859}{arXiv:2604.18859} --- Testing $\Lambda$CDM versus dynamical dark energy in one year: a DESI spectroscopic follow-up program for Rubin supernovae.
+\bibitem{huang2025} Huang L., Cai R.-G., \& Wang S.-J.\ 2025,
+\href{https://arxiv.org/abs/2502.04212}{arXiv:2502.04212}, Sci.\ China Phys.\ Mech.\ Astron.\ --- DESI dynamical-dark-energy evidence biased by low-$z$ supernovae.
+\bibitem{ormondroyd2026} Ormondroyd A.N., Handley W.J., Hobson M.P., Lasenby A.N., \& Yallup D.\ 2026,
+\href{https://arxiv.org/abs/2509.13220}{arXiv:2509.13220}, MNRAS --- Bayesian model selection between dark energy and supernova biases.
+\bibitem{mirpoorian2026} Mirpoorian S.H., Lin M.-X., \& Pogosian L.\ 2026,
+\href{https://arxiv.org/abs/2604.24761}{arXiv:2604.24761} --- Cosmological impact of redshift-dependent Type~Ia supernova calibration.
+\bibitem{vincenzi2025} Vincenzi M.\ et al.\ (DES) 2025,
+\href{https://arxiv.org/abs/2501.06664}{arXiv:2501.06664} --- Comparing DES-SN5YR and Pantheon$+$; offset largely from Malmquist-bias/intrinsic-scatter modelling.
+\bibitem{popovic2025} Popovic B.\ et al.\ 2025,
+\href{https://arxiv.org/abs/2511.07517}{arXiv:2511.07517} --- DES SN reanalysis (Dovekie recalibration); continued preference for evolving dark energy.
 \end{thebibliography}
 
 \vspace{1em}
