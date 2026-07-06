@@ -14,7 +14,7 @@ This is not an official DESI/CMB/Union3 full likelihood analysis. It is a public
 - Public compressed-prior cross-check: CPL improvement drops from ≈ 8.29 to ≈ 0.52 after nuisance
 - Full-likelihood cross-check (Planck NPIPE CamSpec + DESI DR1 BAO + Union3): CPL AIC gain of +8.42 vs LCDM drops to -0.38 after the nuisance is marginalized, and the w0-wa posterior shifts from ≈ 2.4 sigma to ≈ 1.6 sigma from LCDM
 - Random-template null test: 0/200 random templates exceeded the original template; the closest random template was near the original, so this is a ranking/null diagnostic rather than proof of template uniqueness
-- Note: the repository scripts use the current fixed-Omega_m compressed-data protocol. Some earlier draft/preprint robustness tables used a simplified diagnostic setup, so absolute Delta chi2 values may differ from the current repository outputs. The repository scripts and generated CSV files should be treated as the current reproducible results.
+- Note: the repository scripts use the current fixed-Omega_m compressed-data protocol. The CSV files in results/ reproduce the numerical tables quoted in the current note, up to rounding and the grid-scan approximations explicitly marked in the paper (Table 4, footnote [a]).
 
 The Cobaya configurations for both joint cross-checks are included in `cobaya/`; the large MCMC chains and external likelihood data are not committed (see Status and `cobaya/README.md`).
 
