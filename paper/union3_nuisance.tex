@@ -12,6 +12,7 @@
 \usepackage{caption}
 \usepackage{authblk}
 \usepackage[hidelinks]{hyperref}
+\usepackage{placeins}
 
 % Show a placeholder box if a figure file is not present, so the document
 % always compiles. Drop the real PDF (e.g. fullplanck_w0wa.pdf) next to this
@@ -127,15 +128,23 @@ over the data): the low-$z$ anchor region dominated by SDSS/Foundation/Pan-STARR
 ($z\approx0.775$). Quality-cut pass fractions differ between these zones: $0.718$ at
 $z\approx0.10$ versus $0.952$ at $z\approx0.75$.
 
-For the public joint cross-check we use the Cobaya DESI DR1 BAO likelihood, a
-compressed CMB prior $\Omega_m h^2=0.1430\pm0.0020$ (Planck 2018 \cite{planck2018}; deliberately
-broadened from the Planck best-fit $\sigma=0.0011$ as a conservative choice), and the
-Union3 compressed likelihood. Sampled parameters: $H_0$ (flat prior 55--80
-km/s/Mpc), $\Omega_m$ (flat 0.1--0.6), $w_0$ (flat $-3$ to $1$), $w_a$ (flat $-3$ to
-$2$), and nuisance amplitude $a$ (flat $-0.5$ to $0.5$ mag). Flat geometry and standard
-neutrino content ($\Sigma m_\nu=0.06$ eV) assumed; sound horizon fixed at
-$r_d=147.09$ Mpc. Within-redshift $D_M$--$D_H$ BAO correlations are included;
-between-redshift-bin correlations are set to zero. We note that Kim \cite{kim2024}
+For the public joint cross-check (Table~2) we use Cobaya with CAMB, combining the
+official DESI DR1 BAO likelihood (\texttt{bao.desi\_2024\_bao\_all}, with its own
+covariance), a compressed CMB prior on
+$\Omega_m h^2=\Omega_b h^2+\Omega_c h^2+\Omega_\nu h^2=0.1430\pm0.0020$
+(Planck 2018 \cite{planck2018}; deliberately broadened from the Planck best-fit
+$\sigma=0.0011$ as a conservative choice), and the Union3 compressed likelihood with
+the nuisance template implemented as a custom Cobaya likelihood. Sampled parameters:
+$H_0$ (flat 55--85 km/s/Mpc), $\Omega_b h^2$ (Gaussian $0.02237\pm0.00015$),
+$\Omega_c h^2$ (flat 0.09--0.15), $w_0$ (flat $-2$ to $-0.3$), $w_a$ (flat $-3$ to
+$2$), the SN magnitude offset $M$ (flat $-1$ to $1$ mag) and, when included, the
+nuisance amplitude $a$ (flat $-0.08$ to $0.08$ mag); $\tau=0.054$,
+$A_s=2.1\times10^{-9}$, $n_s=0.965$ and $\Sigma m_\nu=0.06$ eV are fixed, flat
+geometry is assumed, and the sound horizon is computed by CAMB. In these joint runs
+$M$ and $a$ are sampled rather than analytically marginalized (unlike the
+compressed-data fits above); the exact configurations and the custom likelihood are
+provided in the repository (\texttt{cobaya/joint\_public\_*.yaml},
+\texttt{cobaya/union3\_nuisance\_likelihood.py}, \texttt{cobaya/cmb\_omh2\_prior.py}). We note that Kim \cite{kim2024}
 showed that the Union3 compressed product distributes a posterior under a spline-node
 prior rather than a raw likelihood, which explains why proxy baseline CPL best-fits
 differ slightly from the official DESI result; this does not affect the relative CPL
@@ -272,7 +281,7 @@ shift is from $\sim2.4\sigma$ to $\sim1.6\sigma$, and the residual CPL AIC penal
 marginal), consistent with the partial weakening already seen in the official Union3.1
 joint analyses (Section~6).
 
-\begin{figure}[h]
+\begin{figure}[!htb]
 \centering
 \figorbox{fullplanck_w0wa_desi.pdf}{0.75\textwidth}{w0-wa: DESI official (black), this work CPL (blue), CPL+nuisance (green), LCDM star.}
 \caption{Full-likelihood joint cross-check in the $w_0$--$w_a$ plane. Black contours:
@@ -607,7 +616,7 @@ amplitude $a$, CPL$+$nuisance (mag)            & $0.0357$ \\
 \end{tabular}
 \end{table}
 
-\begin{figure}[h]
+\begin{figure}[!htb]
 \centering
 \figorbox{overlap_angle.png}{0.95\textwidth}{(a) T(z) vs its best CPL projection; (b) nested chi2 ledger: CPL after T = 0.87, T after CPL = 10.45.}
 \caption{Template--CPL overlap in the Union3 precision metric.
@@ -620,6 +629,7 @@ $0.87$ after $T$, but $T$ adds $10.45$ after CPL: CPL is largely absorbed by $T$
 \end{figure}
 
 % ====================================================================
+\FloatBarrier
 \section{Independent Reproduction}
 
 An independent reproduction of the Union3.1 UNITY1.8 results directly from the raw FITS
