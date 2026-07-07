@@ -1,0 +1,59 @@
+theory:
+  camb:
+    extra_args:
+      lens_potential_accuracy: 1
+      dark_energy_model: ppf
+
+likelihood:
+  bao.desi_2024_bao_all:
+  cmb_omh2_prior.CMBOmh2Prior:
+    input_params: [ombh2, omch2]
+    mean: 0.1430
+    sigma: 0.0020
+    omega_nu_h2: 0.00064
+  union3_nuisance_likelihood.Union3NuisanceLikelihood:
+    data_file: mu_mat_union3_cosmo=2_mu.fits
+    use_nuisance: true
+    input_params: [M_SN, A_nuis]
+
+params:
+  H0:
+    prior: {min: 55, max: 85}
+    ref: {dist: norm, loc: 68.5, scale: 1.0}
+    proposal: 0.3
+  ombh2:
+    prior: {dist: norm, loc: 0.02237, scale: 0.00015}
+    proposal: 0.00005
+  omch2:
+    prior: {min: 0.09, max: 0.15}
+    ref: {dist: norm, loc: 0.120, scale: 0.003}
+    proposal: 0.0008
+  tau: 0.054
+  As: 2.1e-9
+  ns: 0.965
+  mnu: 0.06
+  w:
+    prior: {min: -2.0, max: -0.3}
+    ref: {dist: norm, loc: -1.0, scale: 0.2}
+    proposal: 0.03
+  wa:
+    prior: {min: -3.0, max: 2.0}
+    ref: {dist: norm, loc: 0.0, scale: 0.4}
+    proposal: 0.08
+
+  A_nuis:
+    prior: {min: -0.08, max: 0.08}
+    ref: {dist: norm, loc: 0.03, scale: 0.015}
+    proposal: 0.003
+
+  M_SN:
+    prior: {min: -1.0, max: 1.0}
+    ref: {dist: norm, loc: 0.0, scale: 0.05}
+    proposal: 0.005
+
+sampler:
+  mcmc:
+    Rminus1_stop: 0.02
+    max_tries: 10000
+
+output: chains_joint_public/joint_public_cpl_nuisance

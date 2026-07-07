@@ -6,8 +6,10 @@ cross-checks in the note:
 - **Table 3 — full-likelihood cross-check:** Planck NPIPE CamSpec TTTEEE + low-l TT/EE +
   DESI DR1 BAO + Union3, with the low-z/mid-z nuisance amplitude `a_nuis` sampled directly
   inside the Union3 likelihood.
-- **Table 2 — compressed-prior proxy:** DESI DR1 BAO + Union3 with a compressed CMB prior
-  (lighter, faster public cross-check).
+- **Table 2 — compressed-prior joint cross-check:** DESI DR1 BAO + Union3 with a compressed
+  CMB prior on Omega_m h^2 = 0.1430 +/- 0.0020, implemented as the custom likelihood
+  `cmb_omh2_prior.py`; the Union3 template lives in `union3_nuisance_likelihood.py`.
+  The exact configs are `joint_public_*.yaml` (these are the runs behind Table 2).
 
 These runs are **not executed by this repository** — they require external likelihood codes
 and data (Planck, DESI, Union3) and produce multi-GB MCMC chains. This folder provides the
@@ -70,12 +72,34 @@ Full-likelihood (Table 3) — four models:
 | `fullplanck_cpl.yaml`        | CPL                 | `chains/fullplanck_cpl` |
 | `fullplanck_cpl_nuis.yaml`   | CPL + nuisance      | `chains/fullplanck` |
 
-Compressed-prior proxy (Table 2):
+Compressed-prior joint cross-check (Table 2) — four models (place the Union3 FITS
+`mu_mat_union3_cosmo=2_mu.fits` in this folder and run from inside `cobaya/` so the
+custom modules import):
 
 | File | Model | Output chain |
 |------|-------|--------------|
-| `proxy_base_w_wa.yaml`     | CPL (DESI BAO + Union3) | `chains/baseline` |
-| `proxy_nuisance_w_wa.yaml` | CPL + nuisance          | `chains/nuisance` |
+| `joint_public_lcdm.yaml`          | LCDM            | `chains_joint_public/joint_public_lcdm` |
+| `joint_public_lcdm_nuisance.yaml` | LCDM + nuisance | `chains_joint_public/joint_public_lcdm_nuisance` |
+| `joint_public_cpl.yaml`           | CPL             | `chains_joint_public/joint_public_cpl` |
+| `joint_public_cpl_nuisance.yaml`  | CPL + nuisance  | `chains_joint_public/joint_public_cpl_nuisance` |
+
+Custom likelihoods used by these configs:
+
+- `cmb_omh2_prior.py` — Gaussian prior on Omega_b h^2 + Omega_c h^2 + Omega_nu h^2
+  (mean 0.1430, sigma 0.0020, omega_nu_h2 = 0.00064).
+- `union3_nuisance_likelihood.py` — Union3 compressed likelihood with the low-z/mid-z
+  template T(z) = G(z;0.09,0.06) - G(z;0.775,0.10) (zero mean, unit RMS) and sampled
+  M_SN / A_nuis.
+
+Variant check (NOT the Table 2 configuration): `proxy_base_w_wa.yaml` and
+`proxy_nuisance_w_wa.yaml` are a later, simpler BBN-anchored setup (Gaussian ombh2
+prior, no Omega_m h^2 prior) used as a WSL installation check before the
+full-likelihood runs; their results are not quoted in the note.
+
+| File | Model | Output chain |
+|------|-------|--------------|
+| `proxy_base_w_wa.yaml`     | CPL (DESI BAO + Union3, BBN prior) | `chains/baseline` |
+| `proxy_nuisance_w_wa.yaml` | CPL + nuisance (BBN prior)         | `chains/nuisance` |
 
 Analysis / helper scripts:
 
@@ -103,8 +127,8 @@ python build_table2.py
 python fullplanck_w0wa_aic.py
 ```
 
-For the compressed-prior proxy (Table 2), run `proxy_base_w_wa.yaml` and
-`proxy_nuisance_w_wa.yaml` the same way.
+For the compressed-prior joint cross-check (Table 2), run the four
+`joint_public_*.yaml` configs the same way, from inside this folder.
 
 ## Caveats (read before quoting numbers)
 
