@@ -13,3 +13,4 @@ data/*.tar.gz
 chains/
 *.log
 *.tmp
+chains_joint_public/
